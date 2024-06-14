@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='test_api.mapper.StudentMapper'>
+
+    <insert id='create' parameterType='Students' useGeneratedKeys='true' keyProperty='id'>
+        insert into students(first_name,last_name,gender,dob,place_of_birth,phone,class_id)
+        values(#{firstName},#{lastName},#{gender},#{Dob},#{placeOfBirth},#{phone},#{classId})
+    </insert>
+
+    <select id='getStudent' parameterType='Students'>
+      select id,
+        first_name as firstName, 
+        last_name as lastName,
+        dob as Dob,
+        place_of_birth as placeOfBirth,
+        gender,
+        phone,
+        class_id as classId
+
+      from students
+    </select>
+
+    <select id='getStudentById' parameterType='Students'>
+      select 
+        id,
+        first_name as firstName,
+        last_name as lastName,
+        gender,
+        dob as Dob,
+        place_of_birth as placeOfBirth,
+        phone,
+        class_id as classId
+      from students where id = #{id}
+    </select>
+
+    <update id='update' parameterType='Students'>
+      update students 
+        set
+          first_name = coalesce(#{firstName}, first_name),
+          last_name = coalesce(#{lastName}, last_name),
+          gender = coalesce(#{gender}, gender),
+          dob = coalesce(#{Dob}, dob),
+          place_of_birth =  coalesce(#{placeOfBirth}, place_of_birth),
+          phone = coalesce(#{phone}, phone),
+          class_id =  coalesce(#{classId}, class_id)
+        where id = #{id}
+    </update>
+
+    <delete id='delete' parameterType='Students'> delete from Students where id = #{id}</delete>
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='test_api.mapper.BranchMapper'>
+
+	<resultMap id="BranchResultMap" type="test_api.models.Branch">
+		<id column="id" property="id" />
+		<!-- <result column="branch_name" property="branchName" /> -->
+		<result column="address" property="address" />
+		<result column="description" property="description" />
+		<!-- collections of Cards -->
+		<collection property="classes"
+			ofType="test_api.models.Class" column="class_name"
+			select="selectClass" />
+	</resultMap>
+
+	<resultMap id="ClassResultMap" type="test_api.models.Class">
+		<id property="id" column="id" />
+		<result property="className" column="class_name" />
+		<result property="description" column="description" />
+	</resultMap>
+	<select id="getBranchById" resultMap="BranchResultMap"
+		parameterType="java.lang.String">
+		select
+		<!-- branch_name as branchName, -->
+		address,
+		description
+		from branches where id = #{id}
+	</select>
+	<select id="selectClass" resultMap="ClassResultMap"
+		parameterType="java.lang.String" resultType="test_api.models.Class">
+		select id,class_name as className,description from classes where id = #{id}
+
+	</select>
+
+	<resultMap id="branch" type="test_api.models.Branch">
+		<id column="id" property="id" />
+		<result column="branchName" property="branchName" />
+		<result column="description" property="description" />
+		<result column="address" property="address" />
+		<collection property="getClass" javaType="ArrayList"
+			ofType="test_api.models.Class">
+			<id column="class_id" property="id" />
+			<result column="className" property="className" />
+		</collection>
+	</resultMap>
+
+	<select id="selectByName" resultMap="branch">
+		select
+		B.id,
+		B.branch_name AS branchName,
+		B.description,
+		B.address,
+		C.id AS class_id,
+		C.class_name AS className
+
+		from branches B
+		join classes C ON B.id = C.branch_id
+	</select>
+
+	<select id="selectId" resultMap="branch">
+		select
+		B.id,
+		B.branch_name AS branchName,
+		B.description,
+		B.address,
+		C.id AS class_id,
+		C.class_name AS className
+
+		from branches B
+		join classes C ON B.id = C.branch_id
+		where B.id = #{id}
+	</select>
+
+	<!-- get all branch -->
+	<select id="getAll" parameterType='Branches'>
+		select
+		id,
+		branch_name as branchName,
+		address,
+		description
+		from branches
+	</select>
+	<!-- insert data to branch -->
+	<insert id='create' parameterType='Branches'
+		useGeneratedKeys='true' keyProperty='id'>
+		insert into branches(branch_name,address,description)
+		values(#{branchName},#{address},#{description})
+	</insert>
+	<!-- find branch by id -->
+	<!-- <select id="getBranchById" parameterType='Branches'> select id,branch_name 
+		as branchName, description,address from branches where id = #{id} </select> -->
+	<!-- update data to branch -->
+	<update id="update" parameterType='Branches'>
+		update branches
+		set
+		branch_name = coalesce(#{branchName}, branch_name),
+		description = coalesce(#{description}, description),
+		address = coalesce(#{address}, address)
+		where id = #{id}
+	</update>
+	<!-- delete data from branch -->
+	<delete id='delete' parameterType='Branches'>delete from branches where id
+		= #{id}</delete>
+</mapper>

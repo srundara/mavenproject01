@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='test_api.mapper.SubjectMapper'>
+	<insert id="create" parameterType="Subject"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into subjects(subject)
+		values(#{subject})
+	</insert>
+
+	<resultMap id="Subject" type="test_api.models.Subject">
+		<id column="id" property="id" />
+		<result column="subject" property="subject" />
+		<collection property="getClass" javaType="ArrayList"
+			ofType="test_api.models.Class">
+			<id column="classId" property="id" />
+			<result column="branchId" property="branchId" />
+			<result column="className" property="className" />
+			<result column="description" property="description" />
+		</collection>
+	</resultMap>
+	<select id="getClassBySubject" resultMap="Subject">
+		select
+		s.id,
+		s.subject,
+		c.branch_id as branchId,
+		c.class_name as className,
+		c.description,
+		c.id as classId
+
+		from subjects s
+		left join classsubjects c2 on s.id = c2.subjectid
+		left join classes c on c2.subjectid = c.id
+		where s.id = #{id}
+	</select>
+</mapper>

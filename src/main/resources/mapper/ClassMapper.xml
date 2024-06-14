@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='test_api.mapper.ClassMapper'>
+	
+	<resultMap id="Class" type="test_api.models.Class">
+		<id column="id" property="id" />
+<!-- 		<result column="branchId" property="branchId" /> -->
+		
+		<result column="className" property="className" />
+		<result column="description" property="description" />
+		<collection property="Branch" javaType="ArrayList" ofType="test_api.models.Branch">
+			<id column="branchId" property="id"/>
+			<result column="branchName" property="branchName"/>
+		</collection>
+		<collection property="Subject" javaType="ArrayList" ofType="test_api.models.Subject">
+			<id column="subjectId" property="id" />
+			<result column="subject" property="subject" />
+		</collection>
+		
+	</resultMap>
+	
+	<select id="getSubjectByClass" resultMap="Class">
+		select
+		c.id,
+		b.id as branchId,
+		b.branch_name as branchName,
+		c.class_name as className,
+		c.description,
+		s.id as subjectId,
+		s.subject
+		from classes c
+		left join classsubjects c2 on c.id = c2.classid
+		left join subjects s on c2.subjectid = s.id
+		left  join  branches b on c.branch_id = b.id 
+		where c.id = #{id}
+	</select>
+	
+	<insert id='create' parameterType='Class'>
+		insert into classes(branch_id , class_name , description)
+		values(#{branchId} , #{className}, #{description})
+	</insert>
+
+	<select id='showAllClass' parameterType='Class'>
+		select
+		c.id,
+		<!-- b.branch_name as branchName, -->
+		c.class_name as className,
+		c.description
+		from classes c
+
+	</select>
+	<!-- <select id='showAllClass' resultMap="ClassResult"> select c.id, c.class_name 
+		as className, c.description, b.id, b.branch_name as branchName, b.address, 
+		b.description from classes c left outer join branches b on c.branch_id = 
+		b.id </select> -->
+
+	<!-- <select id='findById' parameterType='Class'> select c.id, b.branch_name 
+		as branchName, c.class_name as className, c.description from classes c join 
+		branches b on c.branch_id = b.id where c.id = #{id} </select> -->
+
+	<!-- <update id='update' parameterType='Class'> update classes set branch_id 
+		= coalesce(#{branchId}, branch_id), class_name = coalesce(#{className}, class_name), 
+		description = coalesce(#{description},description) where id = #{id} </update> -->
+
+	<delete id='delete' parameterType='Class'>
+		delete from classes where id = #{id}
+	</delete>
+</mapper>

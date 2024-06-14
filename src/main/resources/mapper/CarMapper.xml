@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='test_api.mapper.CarMapper'>
+    <select id="list" parameterType="Car"> select id,car,color_id as colorId from cars </select>
+    <insert id="create" parameterType="Car"> insert into cars(car,color_id) values(#{car},#{colorId})</insert>
+    
+    <resultMap id="CarResultMap" type="test_api.models.Car" >
+        <id column="id" property="id"  />
+        <!-- <result column="branch_name" property="branchName"  /> -->
+        <result column="car" property="car" />
+        <!-- <association property="color" javaType="test_api.models.Color">
+            <id property="id" column="color_id"/>
+            <result property="color" column="color_color"/>
+        </association> -->
+        <!-- <result column="" property="color" /> -->
+        <!--    collections of Cards     -->
+        <collection property="colors" javaType="ArrayList" ofType="test_api.models.Color">
+            <id property="id" column="color_id"/>
+            <result property="color" column="color_color"/>
+        </collection>
+    </resultMap>
+    <!-- <resultMap id="slectCar" type="test_api.models.Color">
+        <id property="id" column="id" />
+        <result property="color"  column="color" />
+    </resultMap> -->
+    <select id="selectColors">
+        SELECT 
+            B.color
+        FROM Cars A 
+            JOIN Colors B ON B.id = A.color_id
+        WHERE A.id = #{id}
+    </select>
+    
+    <select id="selectByName" resultMap="CarResultMap">
+        select 
+            A.car,
+            B.id AS color_id,
+            B.color AS color_color
+        from cars A
+            join colors B ON B.id = A.color_id
+    </select>
+
+
+</mapper>

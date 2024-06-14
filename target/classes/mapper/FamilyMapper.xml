@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='test_api.mapper.FamilyMapper'>
+
+    <insert id='create' parameterType='Family'>
+        insert into families(father_name,mother_name,phone,address,student_id)
+        values(#{fatherName},#{motherName,#{phonew}, ${address},#{studentId}})
+    </insert>
+    <select id='getFamily' parameterType='Family'>
+        select id, father_name as fatherName, mother_name as motherName,phone,address,student_id as studentId
+    </select>
+    <select id='getFamilyId' parameterType='Family'>
+        select 
+            id,
+            father_name as fatherName,
+            mother_name as motherName,
+            phone,
+            address,
+            student_id as studentId
+        where id = #{id}
+    </select>
+    <update id='update' parameterType='Family'>
+        update families 
+            set
+                father_name = coalesce(#{fatherName},father_name),
+                mother_name = coalesce(#{motherName}, mother_name),
+                phone = coalesce(#{phone}, phone),
+                address = coalesce(#{address},address),
+                student_id = coalesce(#{studentId}, student_id)
+            where id = ${id}
+    </update>
+    <delete id='delete' parameterType='Family'> delete from families where id = #{id}</delete>
+
+    <resultMap id="result" type="test_api.models.Family">
+        <id column="id" property="id"/>
+        <result column="fatherName" property="fatherName"/>
+        <result column="motherName" property="motherName"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <collection property="studentName" javaType="ArrayList" ofType="test_api.models.Students">
+            <id column="student_id" property="id" />
+            <result column="firstName" property="firstName" />
+            <result column="lastName" property="lastName" />
+            <result column="Dob" property="Dob" />
+            <result column="placeOfBirth" property="placeOfBirth" />
+            <result column="gender" property="gender" />
+            <result column="studentPhone" property="studentPhone" />
+        </collection>
+    </resultMap>
+
+    <select id="getStudentByParent" resultMap="result">
+        select 
+            f.id,
+            f.father_name as fatherName,
+            f.mother_name as motherName,
+            f.phone,
+            f.address,
+            s.first_name as firstName,
+            s.last_name as lastName,
+            s.dob sd Dob,
+            s.place_of_birth as placeOfBirth,
+            s.gender,
+            s.phone as studentPhone
+        from families f
+        join students s on f.student_id = s.id
+        where s.id = #{id}
+    </select>
+</mapper>

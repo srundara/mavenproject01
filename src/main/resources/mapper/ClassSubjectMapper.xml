@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='test_api.mapper.ClassSubjectMapper'>
+	<insert id="classSubject" parameterType="ClassSubject" useGeneratedKeys="true" keyProperty="id">
+		insert into classsubjects(classid,subjectid) values(#{classId},#{subjectId})
+	</insert>
+	
+<!-- 	<resultMap id="getClassBySubject" type="test_api.models.ClassSubject"> -->
+<!--     <id column="id" property="id" /> -->
+<!--     <collection property="getClass" javaType="ArrayList" ofType="test_api.models.Class"> -->
+<!--       <id column="class_id" property="id" /> -->
+<!--       <result column="className" property="className" /> -->
+<!--     </collection> -->
+<!--   </resultMap> -->
+<!-- 	<select id="selectClassBySubject" > -->
+	
+<!-- 	</select> -->
+</mapper>

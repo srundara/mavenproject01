@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='test_api.mapper.SemesterMapper'>
+	<insert id="create" parameterType="Semesters" useGeneratedKeys="true" keyProperty="id">
+		insert into semesters(semester) values(#{semester})
+	</insert>
+	
+	<select id="get" parameterType="Semesters">
+		select * from semesters
+	</select>
+	
+	<update id="update" parameterType="Semesters">
+		update semesters
+			set
+				semester = coalesce(#{semester},semester)
+			where id = #{id}
+	</update>
+	<delete id="delete" parameterType="Semesters">
+		delete from semesters where id = #{id}  
+	</delete>
+</mapper>
